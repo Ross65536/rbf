@@ -1,5 +1,5 @@
 [package]
-name = "rfuck"
+name = "rbf"
 version = "0.1.0"
 authors = ["ros <rk65536@protonmail.com>"]
 edition = "2018"
