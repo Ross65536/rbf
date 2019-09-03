@@ -21,6 +21,10 @@ There are records with negative indexes and there is no limit to the number of r
 
 The application accepts as argument the file of the brainfuck source, otherwise the `stdin` is treated as the source.
 
+Example:
+
+    rbf source.b
+
 ## Instructions
 
 ### Building 
