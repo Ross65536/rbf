@@ -1,6 +1,5 @@
 use std::io::Read;
 
-
 #[derive(Debug, Copy, Clone)]
 pub enum Token {
   IncCell(i64),
@@ -32,7 +31,7 @@ fn char_to_token(c: char) -> Token {
   }
 }
 
-pub fn parse_tokens(reader: &mut dyn Read) -> Vec<Token> {
+pub fn parse_tokens(reader: &mut impl Read) -> Vec<Token> {
   let mut contents = String::new();
   
   reader.read_to_string(&mut contents)
