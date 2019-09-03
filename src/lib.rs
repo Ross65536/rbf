@@ -1,12 +1,9 @@
 mod config;
 use std::io::Write;
-use std::io::stdout;
-use std::io::stdin;
 mod parser;
 mod interpreter;
 use interpreter::executor::{Interpreter};
 use config::{parse};
-use std::env;
 use std::io::Read;
 use std::fs::File;
 mod injection;
