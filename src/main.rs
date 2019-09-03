@@ -1,4 +1,5 @@
 mod config;
+use std::io::stdout;
 use std::io::stdin;
 mod parser;
 mod interpreter;
@@ -18,12 +19,9 @@ fn main() {
   };
 
   let tokens = parser::parse_tokens(&mut file);
-
   parser::validate(&tokens);
-
   let mut interpreter = Interpreter::new();
-
-  interpreter.execute(tokens);
+  interpreter.execute(tokens, &mut file, &mut stdout());
 }
 
 

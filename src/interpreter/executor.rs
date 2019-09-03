@@ -26,30 +26,29 @@ impl Interpreter {
     self.tape.at_im(self.pointer)
   }
 
-  fn print_val(&self) {
+  fn print_val(&self, writer: &mut impl Write) {
     let val = self.curr_val_im();
     if val >= 0 && val < std::u32::MAX as i64 {
       match char::from_u32(val as u32) {
-        Some(c) => print!("{}", c),
+        Some(c) => write!(writer, "{}", c).unwrap(),
         None => (),
-      }
-    }
+      };
+    };
   } 
 
-  fn read_val(&mut self, bytes: &mut Bytes<Stdin>) {
-    match bytes.next() {
-      Some(res) => match res {
-        Ok(b) => *self.curr_val() = b as i64,
-        Err(e) => panic!(e), 
+  fn read_val(&mut self, reader: &mut impl Read) {
+    let mut buf = [0; 1];
+    match reader.read(&mut buf) {
+      Ok(ok) => match ok {
+        1 => *self.curr_val() = buf[0] as i64,
+        _ => *self.curr_val() = -1,
       },
-      None => *self.curr_val() = -1,  
+      Err(e) => panic!(e),
     }
   }
 
-  pub fn execute(&mut self, instructions: Vec<Token>) {
+  pub fn execute(&mut self, instructions: Vec<Token>, reader: &mut impl Read, writer: &mut impl Write) {
     let mut curr_inst = 0;
-    let mut stdin = io::stdin().bytes();
-
 
     loop {
       if curr_inst >= instructions.len() {
@@ -99,8 +98,8 @@ impl Interpreter {
             }
           }
         },
-        Token::Print => self.print_val(),
-        Token::ReadInput => self.read_val(&mut stdin),
+        Token::Print => self.print_val(writer),
+        Token::ReadInput => self.read_val(reader),
       }
 
       curr_inst += 1;
