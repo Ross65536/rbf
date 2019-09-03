@@ -11,18 +11,18 @@ use std::io::Read;
 use std::fs::File;
 mod injection;
 
-pub fn testable_main(reader: &mut impl Read, writer: &mut impl Write) {
+pub fn testable_main(stdin: &mut impl Read, stdout: &mut impl Write) {
   let (commands, _flags) = parse(env::args());
   let mut source : Box<dyn Read> = if commands.len() >= 1 {
     Box::new(File::open(commands[0].clone()).unwrap())
   } else {
-    Box::new(reader)
+    Box::new(stdin)
   };
 
   let tokens = parser::parse_tokens(&mut source);
   parser::validate(&tokens);
   let mut interpreter = Interpreter::new();
-  interpreter.execute(tokens, &mut source, writer);
+  interpreter.execute(tokens, &mut source, stdout);
 }
 
 fn main() {
