@@ -1,5 +1,8 @@
 # rbf
 
+[![Build Status](https://travis-ci.org/Ross65536/rbf.svg?branch=master)](https://travis-ci.org/Ross65536/rbf)
+
+
 Rust brainfuck interpreter I've implemented for fun.
 
 ## Spec Details
