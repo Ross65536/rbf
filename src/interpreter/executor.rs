@@ -1,7 +1,6 @@
 use crate::parser::Token;
 use crate::interpreter::expandable_vec::ExpandableVec;
 use std::char;
-use std::io::{self, Bytes, Stdin};
 use std::io::prelude::*;
 
 #[derive(Debug)]
