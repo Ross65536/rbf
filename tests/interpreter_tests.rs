@@ -8,6 +8,7 @@ use std::io::stdin;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use std::io::SeekFrom;
+use std::path::PathBuf;
 
 fn read_file(path: String) -> String {
   let mut file = File::open(path).unwrap();
@@ -18,17 +19,17 @@ fn read_file(path: String) -> String {
 }
 
 fn create_tmp_file(filename: &str) -> (File, String) {
-  let mut dir = env::temp_dir();
-  dir.push(format!("rbf_tests_{}", filename));
-  let path = dir.to_str().unwrap().to_string();
-
+  let path = format!("./tests/tmp/rbf_tests_{}", filename);
+  let path_str = path.to_string();
   let tmp_file = OpenOptions::new()
     .read(true)
     .write(true)
     .truncate(true)
-    .open(dir)
+    .create(true)
+    .open(path)
     .unwrap();
-  (tmp_file, path)
+
+  (tmp_file, path_str)
 }
 
 fn write_tmp_file(filename: &str, contents: String) -> (File, String) {
