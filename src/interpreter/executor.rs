@@ -3,6 +3,7 @@ use crate::interpreter::expandable_vec::ExpandableVec;
 use std::char;
 use std::io;
 use std::io::prelude::*;
+use std::thread;
 
 #[derive(Debug)]
 pub struct Interpreter {
@@ -26,21 +27,31 @@ impl Interpreter {
     let mut curr_inst = 0;
     let mut stdin = io::stdin().bytes();
 
+
     loop {
-      if curr_inst > instructions.len() {
+      if curr_inst >= instructions.len() {
         break;
       }
 
       let token = instructions[curr_inst]; 
+      
       match token {
         Token::IncPointer(inc) => self.pointer += inc,
         Token::IncCell(inc) => *self.curr_val() += inc,
         Token::StartLoop => {
           if *self.curr_val() == 0 {
+            let mut counter = 0;
             loop {
               curr_inst += 1;
               match instructions[curr_inst] {
-                Token::EndLoop => break,
+                Token::EndLoop => {
+                  if counter == 0 {
+                    break
+                  } else {
+                    counter -= 1;
+                  }
+                },
+                Token::StartLoop => counter += 1,
                 _ => (),
               }
             }
@@ -48,10 +59,18 @@ impl Interpreter {
         },
         Token::EndLoop => {
           if *self.curr_val() != 0 {
+            let mut counter = 0;
             loop {
               curr_inst -= 1;
               match instructions[curr_inst] {
-                Token::StartLoop => break,
+                Token::StartLoop => {
+                  if counter == 0 {
+                    break
+                  } else {
+                    counter -= 1;
+                  }
+                },
+                Token::EndLoop => counter += 1,
                 _ => (),
               }
             }
