@@ -3,12 +3,9 @@ use rbf::testable_main;
 
 use std::fs::File;
 use std::io::{Write, Read};
-use std::env;
-use std::io::stdin;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use std::io::SeekFrom;
-use std::path::PathBuf;
 
 fn read_file(path: String) -> String {
   let mut file = File::open(path).unwrap();
