@@ -1,9 +1,8 @@
 use crate::parser::Token;
 use crate::interpreter::expandable_vec::ExpandableVec;
 use std::char;
-use std::io;
+use std::io::{self, Bytes, Stdin};
 use std::io::prelude::*;
-use std::thread;
 
 #[derive(Debug)]
 pub struct Interpreter {
@@ -21,6 +20,30 @@ impl Interpreter {
 
   fn curr_val(&mut self) -> &mut i64 {
     self.tape.at(self.pointer)
+  }
+
+  fn curr_val_im(&self) -> i64 {
+    self.tape.at_im(self.pointer)
+  }
+
+  fn print_val(&self) {
+    let val = self.curr_val_im();
+    if val >= 0 && val < std::u32::MAX as i64 {
+      match char::from_u32(val as u32) {
+        Some(c) => print!("{}", c),
+        None => (),
+      }
+    }
+  } 
+
+  fn read_val(&mut self, bytes: &mut Bytes<Stdin>) {
+    match bytes.next() {
+      Some(res) => match res {
+        Ok(b) => *self.curr_val() = b as i64,
+        Err(e) => panic!(e), 
+      },
+      None => *self.curr_val() = -1,  
+    }
   }
 
   pub fn execute(&mut self, instructions: Vec<Token>) {
@@ -76,24 +99,8 @@ impl Interpreter {
             }
           }
         },
-        Token::Print => {
-          let val = *self.curr_val();
-          if val >= 0 && val < std::u32::MAX as i64 {
-            match char::from_u32(val as u32) {
-              Some(c) => print!("{}", c),
-              None => (),
-            }
-          }
-        },
-        Token::ReadInput => {
-          match stdin.next() {
-            Some(res) => match res {
-              Ok(b) => *self.curr_val() = b as i64,
-              Err(e) => panic!(e), 
-            },
-            None => *self.curr_val() = -1,  
-          }
-        }
+        Token::Print => self.print_val(),
+        Token::ReadInput => self.read_val(&mut stdin),
       }
 
       curr_inst += 1;

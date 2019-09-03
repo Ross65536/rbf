@@ -11,7 +11,6 @@ fn main() {
   let mut interpreter = Interpreter::new();
 
   interpreter.execute(tokens);
-  println!("{:?}", interpreter);
 }
 
 
