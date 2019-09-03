@@ -1,4 +1,6 @@
 language: rust
+cache: cargo
 rust:
   - 1.37.0
-
+script:
+  - cargo test -- --test-threads=1
